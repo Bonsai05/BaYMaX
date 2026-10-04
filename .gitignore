@@ -1,0 +1,48 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Secrets
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Android
+.gradle/
+local.properties
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# IDE
+.idea/
+.vscode/settings.json
+.vscode/*.code-snippets
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Databases / local state
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated files
+protocol/generated/
+
+# Test output
+coverage/
+.pytest_cache/

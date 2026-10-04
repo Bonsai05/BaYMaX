@@ -1,0 +1,30 @@
+#DEMOCODE
+
+syntax = "proto3";
+
+package baymax.sync.v1;
+
+import "event.proto";
+
+service SyncService {
+  rpc PushEvents(PushEventsRequest) returns (PushEventsResponse);
+  rpc PullEvents(PullEventsRequest) returns (PullEventsResponse);
+}
+
+message PushEventsRequest {
+  string device_id = 1;
+  repeated baymax.event.v1.Event events = 2;
+}
+
+message PushEventsResponse {
+  repeated string accepted_event_ids = 1;
+}
+
+message PullEventsRequest {
+  string device_id = 1;
+  uint64 after_sequence = 2;
+}
+
+message PullEventsResponse {
+  repeated baymax.event.v1.Event events = 1;
+}
