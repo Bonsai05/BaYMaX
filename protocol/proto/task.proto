@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package baymax.task.v1;
+
+service TaskService {
+  rpc CreateTask(CreateTaskRequest) returns (Task);
+  rpc GetTask(GetTaskRequest) returns (Task);
+  rpc ClaimNextTask(ClaimNextTaskRequest) returns (ClaimNextTaskResponse);
+  rpc RenewTaskLease(RenewTaskLeaseRequest) returns (Task);
+  rpc SaveCheckpoint(SaveCheckpointRequest) returns (Checkpoint);
+  rpc ListCheckpoints(ListCheckpointsRequest) returns (ListCheckpointsResponse);
+  rpc FinishTask(FinishTaskRequest) returns (Task);
+}
+
+enum TaskStatus {
+  TASK_STATUS_UNSPECIFIED = 0;
+  TASK_STATUS_PENDING = 1;
+  TASK_STATUS_RUNNING = 2;
+  TASK_STATUS_COMPLETED = 3;
+  TASK_STATUS_FAILED = 4;
+  TASK_STATUS_CANCELLED = 5;
+}
+
+message Task {
+  string task_id = 1;
+  string task_type = 2;
+  TaskStatus status = 3;
+  string payload_json = 4;
+  string result_json = 5;
+  string error = 6;
+  int64 created_at_unix_ms = 7;
+  int64 updated_at_unix_ms = 8;
+  string lease_owner = 9;
+  int64 lease_until_unix_ms = 10;
+  uint64 lease_epoch = 11;
+  string idempotency_key = 12;
+}
+
+message CreateTaskRequest {
+  string task_type = 1;
+  string payload_json = 2;
+  string idempotency_key = 3;
+}
+
+message GetTaskRequest {
+  string task_id = 1;
+}
+
+message ClaimNextTaskRequest {
+  string worker_id = 1;
+  uint32 lease_seconds = 2;
+}
+
+message ClaimNextTaskResponse {
+  bool found = 1;
+  Task task = 2;
+}
+
+message RenewTaskLeaseRequest {
+  string task_id = 1;
+  string worker_id = 2;
+  uint64 lease_epoch = 3;
+  uint32 lease_seconds = 4;
+}
+
+message SaveCheckpointRequest {
+  string task_id = 1;
+  string worker_id = 2;
+  uint64 lease_epoch = 3;
+  string payload_json = 4;
+  string idempotency_key = 5;
+}
+
+message Checkpoint {
+  uint64 checkpoint_id = 1;
+  string task_id = 2;
+  uint64 lease_epoch = 3;
+  string payload_json = 4;
+  int64 created_at_unix_ms = 5;
+  string idempotency_key = 6;
+}
+
+message ListCheckpointsRequest {
+  string task_id = 1;
+}
+
+message ListCheckpointsResponse {
+  repeated Checkpoint checkpoints = 1;
+}
+
+message FinishTaskRequest {
+  string task_id = 1;
+  string worker_id = 2;
+  uint64 lease_epoch = 3;
+  TaskStatus status = 4;
+  string result_json = 5;
+  string error = 6;
+  string idempotency_key = 7;
+}

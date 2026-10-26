@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package baymax.state.v1;
+
+import "event.proto";
+
+service StateService {
+  rpc GetState(GetStateRequest) returns (GetStateResponse);
+  rpc ListState(ListStateRequest) returns (ListStateResponse);
+  rpc ApplyState(ApplyStateRequest) returns (baymax.event.v1.Event);
+  rpc DeleteState(DeleteStateRequest) returns (baymax.event.v1.Event);
+}
+
+message GetStateRequest {
+  string entity_type = 1;
+  string entity_id = 2;
+}
+
+message StateRecord {
+  string entity_type = 1;
+  string entity_id = 2;
+  uint64 version = 3;
+  string payload_json = 4;
+  bool deleted = 5;
+  string last_event_id = 6;
+  int64 updated_at_unix_ms = 7;
+}
+
+message GetStateResponse {
+  bool found = 1;
+  StateRecord state = 2;
+}
+
+message ListStateRequest {
+  string entity_type = 1;
+  bool include_deleted = 2;
+}
+
+message ListStateResponse {
+  repeated StateRecord states = 1;
+}
+
+message ApplyStateRequest {
+  string entity_type = 1;
+  string entity_id = 2;
+  string payload_json = 3;
+  bool has_base_version = 4;
+  uint64 base_version = 5;
+  string idempotency_key = 6;
+}
+
+message DeleteStateRequest {
+  string entity_type = 1;
+  string entity_id = 2;
+  bool has_base_version = 3;
+  uint64 base_version = 4;
+  string idempotency_key = 5;
+}

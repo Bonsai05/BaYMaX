@@ -42,6 +42,9 @@ Thumbs.db
 
 # Generated files
 protocol/generated/
+build/
+dist/
+*.spec
 
 # Test output
 coverage/

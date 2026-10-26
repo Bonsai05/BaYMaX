@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package baymax.event.v1;
+
+// payload_json is a UTF-8 JSON object. sequence is assigned by the receiving
+// Windows Core and is used by PullEvents; source_sequence preserves the sender's
+// sequence when an event crosses devices.
+message Event {
+  string event_id = 1;
+  string entity_type = 2;
+  string entity_id = 3;
+  string event_type = 4;
+  string payload_json = 5;
+  uint64 sequence = 6;
+  string parent_event_id = 7;
+  bool has_base_version = 8;
+  uint64 base_version = 9;
+  bool tombstone = 10;
+  string source_device_id = 11;
+  uint64 source_sequence = 12;
+  string idempotency_key = 13;
+  int64 created_at_unix_ms = 14;
+}
